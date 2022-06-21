@@ -2,18 +2,14 @@ const router = require("express").Router()
 const jwt = require("jsonwebtoken")
 const homeController = require("../controllers/homeController")
 const authController = require("../controllers/authController")
+const { isLogin, isNotLogin } = require("../controllers/middleware")
 
 
-
-router.get("/", (req, res, next) => {
-        jwt.sign({ foo: 'bar' }, process.env.JWT_SECRET_KEY, function(err, token) {
-            res.locals.token = token
-            console.log(token);
-            next();
-        })
-    },
-    homeController.viewHome)
-router.post("/", homeController.postContent)
-router.get("/register", authController.registerAcc)
+router.get("/", homeController.viewHome)
+router.post("/", isLogin, homeController.postContent)
+router.get("/register", authController.viewRegister)
+router.post("/register", authController.registerAcc)
+router.get("/login", authController.viewLogin)
+router.post("/login", authController.postLogin)
 
 module.exports = router

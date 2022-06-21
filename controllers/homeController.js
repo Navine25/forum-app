@@ -2,7 +2,7 @@ const forumApp = require("../model/Forum")
 
 module.exports = {
     viewHome: async(req, res) => {
-        console.log(res.locals.token)
+        console.log("token udh login", req.cookies)
         res.render("home.ejs")
     },
     postContent: async(req, res) => {
