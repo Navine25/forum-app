@@ -11,5 +11,6 @@ router.get("/register", authController.viewRegister)
 router.post("/register", authController.registerAcc)
 router.get("/login", authController.viewLogin)
 router.post("/login", authController.postLogin)
+router.get("/logout", authController.logout)
 
 module.exports = router

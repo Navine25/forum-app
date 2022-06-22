@@ -32,18 +32,30 @@ form {
 }
 
 .content-body {
-    position: absolute;
-    left: 50%;
+    position: relative;
+    /* left: 50%; */
     padding: 5px;
     width: 800px;
-    margin-top: 50px;
-    transform: translate(-50%, -50%);
+    /* transform: translate(-50%, -50%); */
     background: rgba(255, 255, 255, 0.1);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
     border: #092a33 solid 1px;
     border-radius: 30px;
+}
+
+.container-post {
+    margin-top: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.post-content {
+    position: relative;
+    /* left: 25%; */
+}
+
+.post-content h1 {
+    text-align: center;
 }
 
 .what-header input {
