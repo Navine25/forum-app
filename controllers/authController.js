@@ -2,10 +2,12 @@ const User = require("../model/User");
 const jwt = require("jsonwebtoken")
 const { hashing } = require("../utils/hashing")
 const bcrypt = require('bcryptjs');
+const {decode} = require("../utils/decode")
 
 module.exports = {
     viewRegister: async(req, res) => {
-        res.render("register.ejs", { logToken: req.cookies })
+        const dataUser = await decode(req.cookies.token);
+        res.render("register.ejs", { logToken: dataUser ? dataUser.user_name : null })
     },
     registerAcc: async(req, res) => {
         // Hashing using callback
@@ -28,7 +30,8 @@ module.exports = {
         }
     },
     viewLogin: async(req, res) => {
-        res.render("login.ejs", { logToken: req.cookies })
+        const dataUser = await decode(req.cookies.token);
+        res.render("login.ejs", { logToken: dataUser ? dataUser.user_name : null })
     },
     postLogin: async(req, res, next) => {
         const loginInfo = {
@@ -51,7 +54,10 @@ module.exports = {
         next()
         return res.redirect("/")
     },
-    logout: async() => {
-        console.log(document.cookie)
+    logout: async(req, res) => {
+        // console.log(req.cookie)
+        delete req.cookies
+        res.clearCookie("token")
+        res.redirect("/")
     }
 }
