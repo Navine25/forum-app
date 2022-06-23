@@ -4,11 +4,6 @@ const forumAppSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    date: {
-        type: Date,
-        required: true,
-        default: Date.now
-    },
     likeUp: {
         type: Number,
         required: true,
@@ -18,7 +13,15 @@ const forumAppSchema = new mongoose.Schema({
         type: Number,
         required: true,
         default: 0
-    }
-})
+    },
+    user: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'user'
+    },
+    comment: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'comment'
+    }]
+},{timestamp: true})
 
 module.exports = mongoose.model('ForumApp', forumAppSchema);

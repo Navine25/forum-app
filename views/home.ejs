@@ -3,7 +3,7 @@
 
 <head>
     <%- include('layout/header') %>
-        <title>Reddit Knockoff</title>
+        <title>STUCKoverflow - HOME</title>
         <link rel="stylesheet" href="stylesheets/home.css" type="text/css">
 </head>
 
@@ -24,9 +24,27 @@
                 </form>
             </div>
         </div>
+        <hr>
         <div class="post-content">
-            <h1>Hello</h1>
+            <% postingan.forEach(post => { %>
+                <p class="main-post"> <%= post.content %> </p>
+                <form action="/comment/<%= post._id %>" method = "POST" class="reply-post">
+                    <a href="/like/<%= post._id %>/up" class="up-btn btn btn-primary">
+                        UP | <%= post.likeUp %>
+                    </a>
+                    <a href="/like/<%= post._id %>/down" class="down-btn btn btn-danger"> 
+                        DOWN | <%= post.likeDown %>
+                    </a>
+                    <input type="text" name="reply" placeholder="comment me">
+                    <button type="submit">Reply</button>
+                </form>
+                <% post.comment.forEach(cmt => { %>
+                    <p><%= cmt.content %> </p>
+                <% }) %>
+                <hr>
+            <%});%>
         </div>
+
 </body>
 
 </html>

@@ -13,7 +13,7 @@ module.exports = {
             req.token = token
             next()
         } catch (error) {
-            console.log(error);
+            console.log("error for not login");
         }
     },
     isNotLogin: async(req, res, next) => {
