@@ -7,12 +7,14 @@ const port = 3000
 const mongoose = require("mongoose")
 const jwt = require("jsonwebtoken")
 const cookieParser = require("cookie-parser")
+const flash = require("express-flash")
 
 app.set("view engine", "ejs")
 app.use(express.static('public'))
 app.use(cookieParser())
 
 app.use(express.urlencoded({ extended: true }));
+// app.use(flash())
 app.use("/", routes)
 
 mongoose.connect(process.env.DB_CONNECTION).then(() => {

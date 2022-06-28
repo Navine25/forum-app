@@ -3,6 +3,8 @@ const jwt = require("jsonwebtoken")
 const { hashing } = require("../utils/hashing")
 const bcrypt = require('bcryptjs');
 const {decode} = require("../utils/decode")
+const {sendVerifyEmail} = require("../utils/verifyMail")
+const flash = require("express-flash")
 
 module.exports = {
     viewRegister: async(req, res) => {
@@ -18,10 +20,14 @@ module.exports = {
             user_name: req.body.user_name,
             password: bcrypt.hashSync(req.body.password, 4) // semoga bisa
         })
-        console.log("reg_acc", register_acc);
+       
+        // console.log("reg_acc", register_acc);
         try {
             await register_acc.save()
+            // const newAcc_id = register_acc._id.toString()
+            await sendVerifyEmail(register_acc)
             console.log("Account created");
+
             res.redirect("/")
         } catch (err) {
             console.log(err);
@@ -43,6 +49,10 @@ module.exports = {
         if (!result) return res.redirect("/login")
         const checkPass = bcrypt.compareSync(loginInfo.password, result.password);
         if (!checkPass) return res.redirect("/login")
+        if(result.isVerify == false) {
+            // req.flash('msg', 'account not verified')
+            return res.redirect('/login')
+        }
         const dataToken = {
             _id: result._id,
             user_name: result.user_name,
@@ -52,12 +62,31 @@ module.exports = {
         // res.locals.token = token
         res.cookie("token", token)
         next()
-        return res.redirect("/")
+        return res.redirect('/')
     },
     logout: async(req, res) => {
         // console.log(req.cookie)
         delete req.cookies
         res.clearCookie("token")
+        res.redirect("/")
+    },
+    verifyEmail: async(req, res, next)=>{
+        if(req.params.token == null){
+            console.log("Error bro")
+            return res.redirect("/")
+        }
+        const data = jwt.verify(req.params.token, process.env.JWT_SECRET_KEY)
+        console.log("req peram: ", req.params.token)
+        console.log("data: ", data)
+        const userId = await User.findById(data._id)
+        if(!userId) {
+            console.log("user nor found")
+            res.redirect("/")
+        }
+        userId.isVerify = true
+        await userId.save()
+        // alert("verify selesai")
+        console.log("verify selesai")
         res.redirect("/")
     }
 }

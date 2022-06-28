@@ -18,7 +18,12 @@ const userSchema = new mongoose.Schema({
     likedPost: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'ForumApp'
-    }]
+    }],
+    isVerify: {
+        type: Boolean,
+        default: false,
+        required: true
+    }
 })
 
 module.exports = mongoose.model('user', userSchema);
