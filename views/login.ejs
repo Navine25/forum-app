@@ -9,6 +9,9 @@
 
 <body>
     <div class="register-content">
+        <% if(msg) {%>
+            <p><%= msg %></p>
+        <% }%>
         <h1>Login</h1>
         <form action="/login" method="POST">
             <h5>Username</h5>

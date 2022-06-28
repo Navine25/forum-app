@@ -37,7 +37,7 @@ module.exports = {
     },
     viewLogin: async(req, res) => {
         const dataUser = await decode(req.cookies.token);
-        res.render("login.ejs", { logToken: dataUser ? dataUser.user_name : null })
+        res.render("login.ejs", { logToken: dataUser ? dataUser.user_name : null , msg:req.query.msg})
     },
     postLogin: async(req, res, next) => {
         const loginInfo = {
@@ -46,12 +46,15 @@ module.exports = {
         }
         console.log(loginInfo);
         const result = await User.findOne({ user_name: loginInfo.user_name })
-        if (!result) return res.redirect("/login")
+        var errorMsgUserNotFound = encodeURIComponent("User Not Found")
+        if (!result) return res.redirect(`/login?msg=${errorMsgUserNotFound}`)
+        // if (!result) return res.render("login.ejs", {logToken: null, msg:'user not found'})
         const checkPass = bcrypt.compareSync(loginInfo.password, result.password);
         if (!checkPass) return res.redirect("/login")
+        var errorMsgUserNotVerified = encodeURIComponent("User Not Verified")
         if(result.isVerify == false) {
             // req.flash('msg', 'account not verified')
-            return res.redirect('/login')
+            return res.redirect(`/login?msg=${errorMsgUserNotVerified}`)
         }
         const dataToken = {
             _id: result._id,
