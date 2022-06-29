@@ -13,27 +13,26 @@ module.exports = {
     },
     registerAcc: async(req, res) => {
         // Hashing using callback
-        // hashing(req.body.password, (hash) => {
-        //     console.log("hashing", hash)
-        // })
-        const register_acc = new User({
-            user_name: req.body.user_name,
-            password: bcrypt.hashSync(req.body.password, 4) // semoga bisa
-        })
-       
-        // console.log("reg_acc", register_acc);
-        try {
-            await register_acc.save()
-            // const newAcc_id = register_acc._id.toString()
-            await sendVerifyEmail(register_acc)
-            console.log("Account created");
 
-            res.redirect("/")
-        } catch (err) {
-            console.log(err);
-            console.log("Create account failed");
-            res.redirect("/")
-        }
+        hashing(req.body.password, async (hash) => {
+            console.log("hashing", hash)
+            const register_acc = new User({
+                user_name: req.body.user_name,
+                // password: bcrypt.hashSync(req.body.password, 4)
+                password: hash
+            })
+
+            try {
+                await register_acc.save()
+                await sendVerifyEmail(register_acc)
+                console.log("Account created");
+                res.redirect("/")
+            } catch (err) {
+                console.log(err);
+                console.log("Create account failed");
+                res.redirect("/")
+            }
+        })        
     },
     viewLogin: async(req, res) => {
         const dataUser = await decode(req.cookies.token);

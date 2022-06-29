@@ -20,6 +20,7 @@ module.exports = {
   },
   postContent: async (req, res) => {
     console.log(req.user);
+    console.log(req.body.content)
     const forumPost = new forumApp({
       content: req.body.content,
       user: req.user._id,
@@ -57,8 +58,6 @@ module.exports = {
     const userId = req.user._id;
     const userData = await user.findById(userId);
     let isLiked = false;
-
-    // OBJECTNYA HARUS DIPECAH JADI STRING UNTUK YANG userData.likedPost[index]._id
 
     if (userData.likedPost != null) {
       for (let index = 0; index < userData.likedPost.length; index++) {
