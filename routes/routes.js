@@ -4,10 +4,11 @@ const homeController = require("../controllers/homeController")
 const authController = require("../controllers/authController")
 const { isLogin, isNotLogin} = require("../controllers/middleware")
 const verifyMail = require("../utils/verifyMail")
-
+const multer = require("multer")
+const upload = multer({dest: 'images/'})
 
 router.get("/", homeController.viewHome)
-router.post("/", isLogin, homeController.postContent)
+router.post("/", upload.array('foto', 10), isLogin,  homeController.postContent)
 router.post("/comment/:id", isLogin, homeController.postComment)
 router.get("/register", authController.viewRegister)
 router.post("/register", authController.registerAcc)

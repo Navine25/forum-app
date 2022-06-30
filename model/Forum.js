@@ -14,6 +14,10 @@ const forumAppSchema = new mongoose.Schema({
         required: true,
         default: 0
     },
+    image: {
+        type: String,
+        required: false
+    },
     user: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'user'
@@ -21,7 +25,7 @@ const forumAppSchema = new mongoose.Schema({
     comment: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'comment'
-    }]
+    }],
 },{timestamp: true})
 
 module.exports = mongoose.model('ForumApp', forumAppSchema);

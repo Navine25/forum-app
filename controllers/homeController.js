@@ -1,8 +1,11 @@
 const forumApp = require("../model/Forum");
 const comment = require("../model/Comment");
 const { decode } = require("../utils/decode");
-const { find } = require("../model/Forum");
 const user = require("../model/User");
+const formidable = require("formidable");
+const fs = require("fs");
+const path = require("path");
+const { rootPath } = require("../config/index");
 
 module.exports = {
   viewHome: async (req, res) => {
@@ -19,20 +22,49 @@ module.exports = {
     });
   },
   postContent: async (req, res) => {
-    console.log(req.user);
-    console.log(req.body.content)
-    const forumPost = new forumApp({
-      content: req.body.content,
-      user: req.user._id,
-    });
+    // console.log(req.files)
+    // console.log(../__dirname)
+    // console.log("reqfile ", req.files)
 
-    try {
-      await forumPost.save();
-      res.redirect("/");
-    } catch (err) {
-      console.log("Failed to post");
-      res.redirect("/");
+    if (req.files.length) {
+      console.log("rootpath ", rootPath);
+      const filename = req.files[0].originalname;
+      const destPath = `${rootPath}/public/images/${filename}`;
+      console.log(destPath);
+      const readStream = fs.createReadStream(req.files[0].path);
+      const destinationStream = fs.createWriteStream(destPath);
+      readStream.pipe(destinationStream);
+      readStream.on("end", async () => {
+        const forumPost = new forumApp({
+          content: req.body.content,
+          user: req.user._id,
+          image: filename,
+        });
+        console.log("forumPost: ", forumPost);
+        try {
+          await forumPost.save();
+          res.redirect("/");
+        } catch (err) {
+          console.log("Failed to post");
+          res.redirect("/");
+        }
+      });
+    } else {
+      const forumPost = new forumApp({
+        content: req.body.content,
+        user: req.user._id,
+        image: null,
+      });
+      console.log("forumPost: ", forumPost);
+      try {
+        await forumPost.save();
+        res.redirect("/");
+      } catch (err) {
+        console.log("Failed to post");
+        res.redirect("/");
+      }
     }
+
   },
   postComment: async (req, res) => {
     // console.log(req.params)
@@ -61,9 +93,9 @@ module.exports = {
 
     if (userData.likedPost != null) {
       for (let index = 0; index < userData.likedPost.length; index++) {
-        if(post._id.toString() == userData.likedPost[index]._id.toString()){
+        if (post._id.toString() == userData.likedPost[index]._id.toString()) {
           isLiked = true;
-          console.log("isliked" , isLiked)
+          console.log("isliked", isLiked);
         }
       }
     }
@@ -71,9 +103,8 @@ module.exports = {
     if (isLiked == false) {
       if (req.params.action == "up") post.likeUp = post.likeUp + 1;
       if (req.params.action == "down") post.likeDown = post.likeDown + 1;
-      userData.likedPost.push(postId)
-      await userData.save()
-
+      userData.likedPost.push(postId);
+      await userData.save();
     } else {
       console.log("Post have been liked.");
     }

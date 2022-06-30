@@ -14,19 +14,19 @@
         <!-- BODY -->
         <div class="container-post">
             <div class="content-body">
-                <form action="/" method="POST" class="what-header">
+                <form action="/" method="POST" class="what-header" enctype="multipart/form-data">
                     <input type="text" name="content" placeholder="What's up?">
-                    <button type="submit">
-                        <span class="fas fa-plus submit-button ">
-                            POST
-                        </span>
-                    </button>
+                    <input type="file", name="foto">
+                    <div class="post-btn">
+                        <input type="submit" value="POST">
+                    </div>
                 </form>
             </div>
         </div>
         <hr>
         <div class="post-content">
             <% postingan.forEach(post => { %>
+                <img class="rounded mx-auto d-block" src="/images/<%= post.image %>" alt="" width="150px">
                 <p class="main-post"> <%= post.content %> </p>
                 <form action="/comment/<%= post._id %>" method = "POST" class="reply-post">
                     <a href="/like/<%= post._id %>/up" class="up-btn btn btn-primary">

@@ -89,3 +89,8 @@ form {
 .down-btn{
     margin: 0 10px 0 5px;
 }
+
+.post-btn{
+    margin: 7px 0 7px 7px;
+    width: 100px;
+}
